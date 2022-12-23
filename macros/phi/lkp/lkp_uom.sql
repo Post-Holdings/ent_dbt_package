@@ -1,0 +1,9 @@
+{%- macro lkp_uom(ITEM_GUID,FROM_UOM,TO_UOM,ALIAS) -%}
+(SELECT ITEM_GUID,FROM_UOM,TO_UOM,CONVERSION_RATE,INVERSION_RATE,
+ROW_NUMBER() over (partition by ITEM_GUID, FROM_UOM, TO_UOM order by ITEM_GUID, FROM_UOM, TO_UOM ) AS ROW_NUM
+    FROM ( {{ ref(env_var('DBT_TABLE_UOM'))}} ) ) {{ALIAS}}
+    ON {{ALIAS}}.ITEM_GUID = {{ ITEM_GUID }}
+    AND {{ALIAS}}.FROM_UOM = {{ FROM_UOM }}
+    AND {{ALIAS}}.TO_UOM = {{ TO_UOM }}
+    AND {{ALIAS}}.ROW_NUM =1
+{% endmacro %}

@@ -29,6 +29,6 @@ select
 from {{ b_relation }}
 {% endset %}
 
-{{ compare_queries(a_query, b_query, primary_key, summarize) }}
+{{ dbt_package.compare_queries(a_query, b_query, primary_key, summarize) }}
 
 {% endmacro %}

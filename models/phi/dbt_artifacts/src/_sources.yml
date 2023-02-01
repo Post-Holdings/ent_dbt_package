@@ -311,3 +311,14 @@ sources:
     
     tables:
       - name: query_history
+      
+  - name: snapshots
+    schema: "{{ env_var('DBT_ARTIFACTS_SCHEMA', target.schema) }}"
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+    
+    tables:
+      - name: dbt_tests_snapshots

@@ -34,7 +34,7 @@
 
             SELECT 
                 '{{ table_name[0] }}' as test_name,
-                TO_TIMESTAMP_TZ(('{{ table_name[1] }}') as snapshot_date,
+                TO_TIMESTAMP_TZ('{{ table_name[1] }}') as snapshot_date,
                 {{ count_result[0][0]|round|int }} as failure_count 
 
 

@@ -40,11 +40,15 @@ with models as (
   where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 
 )
-,  tests_stats as (
-
-  select *
-  from {{ source('dbt_tests_8ave', 'dbt_tests_snapshots') }}
-
+, tests_stats as (
+  select test_name,
+  to_date(snapshot_date) as snapshot_date,
+  (failure_count),
+  dbt_scd_id,
+  dbt_updated_at,
+  dbt_valid_from,
+  dbt_valid_to
+  from {{ source('dbt_tests', 'dbt_tests_snapshots') }}
 )
 
 select 
@@ -93,12 +97,19 @@ test_executions.run_started_at as executed_test_run_started_at,
 test_executions.was_full_refresh as executed_test_was_full_refresh,
 test_executions.thread_id as executed_test_thread_id,
 test_executions.status as executed_test_status,
-test_executions.compile_started_at as executed_test_compile_started_at,
-test_executions.query_completed_at as executed_test_query_completed_at,
+to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.compile_started_at))) as executed_test_compile_started_at,
+to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.query_completed_at))) as executed_test_query_completed_at,
 test_executions.total_node_runtime as executed_test_total_node_runtime,
 test_executions.rows_affected as executed_test_rows_affected,
 test_executions.failures as executed_test_failures
 
+to_date(tests_stats.snapshot_date) as snapshot_date,
+tests_stats.failure_count as test_failure_count,
+tests_stats.dbt_scd_id,
+tests_stats.dbt_updated_at,
+tests_stats.dbt_valid_from,
+tests_stats.dbt_valid_to
+  
 from models
 left join model_executions
 on model_executions.node_id = models.node_id
@@ -109,3 +120,8 @@ and tests.depends_on_node_id = models.node_id
 left join test_executions
 on test_executions.node_id = tests.node_id
 and test_executions.command_invocation_id = tests.command_invocation_id
+left join tests_stats
+on upper(tests_stats.test_name) = upper(tests.name)
+--and tests_stats.snapshot_date = to_date(test_executions.query_completed_at)
+and dbt_valid_from between to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.compile_started_at))) and to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.query_completed_at)))
+

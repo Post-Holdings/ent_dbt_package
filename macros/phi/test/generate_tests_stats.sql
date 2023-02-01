@@ -7,7 +7,7 @@
             t.name as table_name,
             t.modify_date as modified_date
         from sys.tables t
-        where schema_name(t.schema_id) = '{{ schema }}'
+        where schema_name(t.schema_id) = '{{env_var('DBT_TEST_SCHEMA')}}'
         order by table_name
 
     {%- endcall -%}

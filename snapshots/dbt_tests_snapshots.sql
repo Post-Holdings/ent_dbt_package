@@ -6,7 +6,7 @@
         strategy='timestamp',
         unique_key='test_name',
         updated_at='snapshot_date',
-        target_schema="{{env_var('DBT_TEST_SCHEMA')}}"
+        target_schema= env_var('DBT_TEST_SCHEMA')
     )
 }}
 

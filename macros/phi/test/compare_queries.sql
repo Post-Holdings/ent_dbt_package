@@ -1,5 +1,5 @@
 {% macro compare_queries(a_query, b_query, primary_key=None, summarize=true) -%}
-  {{ return(adapter.dispatch('compare_queries', 'dbt_package')(a_query, b_query, primary_key, summarize)) }}
+  {{ return(adapter.dispatch('compare_queries', 'ent_dbt_package')(a_query, b_query, primary_key, summarize)) }}
 {%- endmacro %}
 
 {% macro default__compare_queries(a_query, b_query, primary_key=None, summarize=true) %}

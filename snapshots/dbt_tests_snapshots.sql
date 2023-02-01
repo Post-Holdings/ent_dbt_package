@@ -14,7 +14,7 @@
 {% if  target.name in ["dev", "ci"] %}
     {%- set test_schema = target.schema ~ '_tests' -%}
 {% else %}
-     {%- set test_schema = "{{env_var('DBT_TEST_SCHEMA')}}" -%}
+     {%- set test_schema -%} {{env_var('DBT_TEST_SCHEMA')}} {%- endset -%}
 {% endif %}
 
 {{ generate_tests_stats(test_schema) }}

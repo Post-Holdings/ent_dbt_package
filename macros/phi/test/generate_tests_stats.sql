@@ -4,7 +4,7 @@
     {%- call statement('tests_tables_query', fetch_result=True) %}
 
         select
-            t.name as table_name,
+            t.table_name as table_name,
             t.last_altered as modified_date
         from information_schema.tables t
         where upper(t.table_schema) = '{{env_var('DBT_TEST_SCHEMA')}}'

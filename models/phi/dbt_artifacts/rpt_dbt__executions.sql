@@ -25,9 +25,10 @@ with models as (
 , tests as (
 
   select *
-  , array_to_string((depends_on_nodes), ', ') as depends_on_node_id
+  --, array_to_string((depends_on_nodes), ', ') as depends_on_node_id
+  , replace(f.value,'"','') as depends_on_node_id
   from {{ ref('dim_dbt__tests') }}
-  , table(flatten(depends_on_nodes))
+  , table(flatten(depends_on_nodes)) f
   where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 
 )
@@ -37,6 +38,12 @@ with models as (
   select *
   from {{ ref('fct_dbt__test_executions') }}
   where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
+
+)
+,  tests_stats as (
+
+  select *
+  from {{ source('dbt_tests_8ave', 'dbt_tests_snapshots') }}
 
 )
 
@@ -73,7 +80,7 @@ tests.test_execution_id,
 tests.node_id as test_node_id,
 tests.run_started_at as test_run_started_at,
 tests.name as test_name,
-tests.depends_on_nodes as test_depends_on_nodes,
+--tests.depends_on_nodes as test_depends_on_nodes,
 tests.depends_on_node_id as test_depends_on_node_id,
 tests.package_name as test_package_name,
 tests.test_path as test_test_path,

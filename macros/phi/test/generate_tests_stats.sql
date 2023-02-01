@@ -9,6 +9,7 @@
             t.last_altered as modified_date
         from information_schema.tables t
         where upper(t.table_schema) = upper('{{env_var('DBT_TEST_SCHEMA')}}')
+        and t.table_name <> 'DBT_TESTS_SNAPSHOTS'
         order by table_name
 
     {%- endcall -%}

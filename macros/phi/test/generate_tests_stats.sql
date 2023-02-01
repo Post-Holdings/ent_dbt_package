@@ -1,5 +1,6 @@
 {%- macro generate_tests_stats(schema) -%} 
 
+
     {# Check all tables in the provided tests schema #}
     {%- call statement('tests_tables_query', fetch_result=True) %}
 
@@ -33,7 +34,7 @@
 
             SELECT 
                 '{{ table_name[0] }}' as test_name,
-                CAST('{{ table_name[1] }}' AS DATETIME2(7)) as snapshot_date,
+                TO_TIMESTAMP_TZ(('{{ table_name[1] }}') as snapshot_date,
                 {{ count_result[0][0]|round|int }} as failure_count 
 
 

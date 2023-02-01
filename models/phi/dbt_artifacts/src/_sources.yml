@@ -300,7 +300,7 @@ sources:
           description: '{{ doc("dbt_vars") }}'
 
 
- # snowflake usage tables
+# snowflake usage tables
   - name: snowflake_account_usage
     database: snowflake
     schema: account_usage
@@ -313,7 +313,7 @@ sources:
     tables:
       - name: query_history
  
- # dbt test tables
+# dbt test tables
   - name: dbt_tests
     schema: "{{ env_var('DBT_TEST_SCHEMA', target.schema) }}"
 

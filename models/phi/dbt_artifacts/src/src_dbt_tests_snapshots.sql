@@ -1,6 +1,6 @@
 with source as (
 
-    select * from {{ source('snapshots', 'dbt_tests_snapshots') }}
+    select * from {{ source('dbt_tests', 'dbt_tests_snapshots') }}
 
 ),
 

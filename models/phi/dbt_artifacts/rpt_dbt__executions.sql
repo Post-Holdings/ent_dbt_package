@@ -43,7 +43,7 @@ with models as (
 , tests_stats as (
   select test_name,
   to_date(snapshot_date) as snapshot_date,
-  (failure_count),
+  failure_count,
   dbt_scd_id,
   dbt_updated_at,
   dbt_valid_from,
@@ -101,7 +101,7 @@ to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_e
 to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.query_completed_at))) as executed_test_query_completed_at,
 test_executions.total_node_runtime as executed_test_total_node_runtime,
 test_executions.rows_affected as executed_test_rows_affected,
-test_executions.failures as executed_test_failures
+test_executions.failures as executed_test_failures,
 
 to_date(tests_stats.snapshot_date) as snapshot_date,
 tests_stats.failure_count as test_failure_count,

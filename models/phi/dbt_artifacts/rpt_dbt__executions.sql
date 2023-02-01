@@ -48,7 +48,7 @@ with models as (
   dbt_updated_at,
   dbt_valid_from,
   dbt_valid_to
-  from {{ source('dbt_tests', 'dbt_tests_snapshots') }}
+  from {{ ref('src_dbt_tests_snapshots') }}
 )
 
 select 

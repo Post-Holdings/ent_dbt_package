@@ -5,9 +5,9 @@
 
         select
             t.name as table_name,
-            t.modify_date as modified_date
-        from sys.tables t
-        where schema_name(t.schema_id) = '{{env_var('DBT_TEST_SCHEMA')}}'
+            t.last_altered as modified_date
+        from information_schema.tables t
+        where upper(t.table_schema) = '{{env_var('DBT_TEST_SCHEMA')}}'
         order by table_name
 
     {%- endcall -%}

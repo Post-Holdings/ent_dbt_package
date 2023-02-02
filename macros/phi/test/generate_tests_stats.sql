@@ -1,13 +1,15 @@
 {%- macro generate_tests_stats(schema) -%} 
 
+
     {# Check all tables in the provided tests schema #}
     {%- call statement('tests_tables_query', fetch_result=True) %}
 
         select
-            t.name as table_name,
-            t.modify_date as modified_date
-        from sys.tables t
-        where schema_name(t.schema_id) = '{{ schema }}'
+            t.table_name as table_name,
+            t.last_altered as modified_date
+        from information_schema.tables t
+        where upper(t.table_schema) = upper('{{env_var('DBT_TEST_SCHEMA')}}')
+        and t.table_name <> 'DBT_TESTS_SNAPSHOTS'
         order by table_name
 
     {%- endcall -%}
@@ -33,7 +35,7 @@
 
             SELECT 
                 '{{ table_name[0] }}' as test_name,
-                CAST('{{ table_name[1] }}' AS DATETIME2(7)) as snapshot_date,
+                TO_TIMESTAMP_TZ('{{ table_name[1] }}') as snapshot_date,
                 {{ count_result[0][0]|round|int }} as failure_count 
 
 

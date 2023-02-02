@@ -1,5 +1,5 @@
-name: 'dbt_package'
-version: '1.2.0'
+name: 'ent_dbt_package'
+version: '1.4.0'
 
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 
@@ -31,7 +31,7 @@ log-path: "logs"
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  dbt_package:
+  ent_dbt_package:
     # Applies to all files under models/example/
     phi:
       stg_dim:
@@ -73,6 +73,9 @@ models:
       +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
       +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
     sources:
+      +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
+      +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
+    src:
       +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
       +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
 

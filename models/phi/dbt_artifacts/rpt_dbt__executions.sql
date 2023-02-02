@@ -117,6 +117,7 @@ and model_executions.command_invocation_id = models.command_invocation_id
 left join tests
 on tests.command_invocation_id = models.command_invocation_id
 and tests.depends_on_node_id = models.node_id
+--and tests.depends_on_node_id like concat('%',models.node_id,'%')
 left join test_executions
 on test_executions.node_id = tests.node_id
 and test_executions.command_invocation_id = tests.command_invocation_id

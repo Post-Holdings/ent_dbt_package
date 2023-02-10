@@ -12,7 +12,7 @@
 
 -- Set schema, since tests use custom schema on dev
 {% if  target.name in ["dev", "ci"] %}
-    {%- set test_schema = target.schema ~ '_tests' -%}
+    {%- set test_schema = target.schema -%}
 {% else %}
      {%- set test_schema -%} {{env_var('DBT_TEST_SCHEMA')}} {%- endset -%}
 {% endif %}

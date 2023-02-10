@@ -10,7 +10,6 @@
     )
 }}
 
--- Set schema, since tests use custom schema on dev
 {%- set test_schema -%} {{env_var('DBT_TEST_SCHEMA')}} {%- endset -%}
 
 {{ generate_tests_stats(test_schema) }}

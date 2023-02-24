@@ -16,10 +16,20 @@ with models as (
 
 , model_tags as (
 
-  select a.*
+  select distinct a.*
   , replace(f.value,'"','') as model_tags
   from {{ ref('dim_dbt__models') }} a
   , table(flatten(tags)) f
+  where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
+
+)
+
+, model_dependent_nodes as (
+
+  select distinct a.*
+  , replace(f.value,'"','') as model_dependent_nodes
+  from {{ ref('dim_dbt__models') }} a
+  , table(flatten(depends_on_nodes)) f
   where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 
 )
@@ -45,7 +55,7 @@ with models as (
 
 , test_tags as (
 
-  select a.*
+  select distinct a.*
   , replace(f.value,'"','') as test_tags
   from {{ ref('dim_dbt__tests') }} a
   , table(flatten(tags)) f
@@ -70,6 +80,21 @@ with models as (
   from {{ ref('src_dbt_tests_snapshots') }}
   where snapshot_date >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 )
+, sla as (
+  select 'ENT' as oc, '7' as sla_hour
+  UNION
+  select 'BEF' as oc, '5.30 ' as sla_hour
+  UNION
+  select 'E8AVE' as oc, '6.30 ' as sla_hour
+  UNION
+  select 'WBX' as oc, '12 ' as sla_hour
+  UNION
+  select 'BRBR' as oc, '7 ' as sla_hour
+  UNION
+  select 'PCB' as oc, '7' as sla_hour
+  UNION
+  select 'MFI' as oc, '7' as sla_hour
+)
 
 select 
 models.model_execution_id as model_execution_id,
@@ -79,7 +104,8 @@ models.run_started_at as model_run_started_at,
 models.database as model_database,
 models.schema as model_schema,
 models.name as model_name,
-models.depends_on_nodes as model_dependent_nodes,
+--models.depends_on_nodes as model_dependent_nodes,
+model_dependent_nodes.model_dependent_nodes as model_dependent_nodes,
 models.package_name as model_package_name,
 models.path as model_path,
 models.materialization as model_materialization,
@@ -127,12 +153,19 @@ test_executions.rows_affected as executed_test_rows_affected,
 test_executions.failures as executed_test_failures,
 
 to_date(tests_stats.snapshot_date) as snapshot_date,
+
+/*
 tests_stats.failure_count as test_failure_count,
 tests_stats.dbt_scd_id,
 tests_stats.dbt_updated_at,
 tests_stats.dbt_valid_from,
-tests_stats.dbt_valid_to
-  
+tests_stats.dbt_valid_to,
+*/
+
+case when date_part(hour,model_run_started_at) >= 12 then dateadd(hour,sla.sla_hour,dateadd(day,1,date_trunc('day',model_run_started_at)))
+     else dateadd(hour,sla.sla_hour,date_trunc('day',model_run_started_at)) end as sla,
+case when model_executions.query_completed_at > sla then 'sla-missed' else 'sla-met' end sla_status
+
 from models
 left join model_executions
 on model_executions.node_id = models.node_id
@@ -154,3 +187,8 @@ and model_tags.command_invocation_id = models.command_invocation_id
 left join test_tags
 on test_tags.node_id = tests.node_id
 and test_tags.command_invocation_id = tests.command_invocation_id
+left join model_dependent_nodes
+on model_dependent_nodes.node_id = models.node_id
+and model_dependent_nodes.command_invocation_id = models.command_invocation_id
+left join sla
+on sla.oc = upper(substr(models.database,0,regexp_instr(models.database,'_') - 1))

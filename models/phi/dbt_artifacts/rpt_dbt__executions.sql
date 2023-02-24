@@ -81,19 +81,19 @@ with models as (
   where snapshot_date >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 )
 , sla as (
-  select 'ENT' as oc, '7' as sla_hour
+  select 'ENT' as oc, '420' as sla_minutes  -- 7 am
   UNION
-  select 'BEF' as oc, '5.30 ' as sla_hour
+  select 'BEF' as oc, '330 ' as sla_minutes  -- 5.30 am
   UNION
-  select 'E8AVE' as oc, '6.30 ' as sla_hour
+  select 'E8AVE' as oc, '390' as sla_minutes  -- 6.30 am
   UNION
-  select 'WBX' as oc, '12 ' as sla_hour
+  select 'WBX' as oc, '0 ' as sla_minutes  -- 12 am
   UNION
-  select 'BRBR' as oc, '7 ' as sla_hour
+  select 'BRBR' as oc, '420 ' as sla_minutes  -- 7 am
   UNION
-  select 'PCB' as oc, '7' as sla_hour
+  select 'PCB' as oc, '420' as sla_minutes  -- 7 am
   UNION
-  select 'MFI' as oc, '7' as sla_hour
+  select 'MFI' as oc, '420' as sla_minutes  -- 7 am
 )
 
 select 
@@ -162,8 +162,8 @@ tests_stats.dbt_valid_from,
 tests_stats.dbt_valid_to,
 */
 
-case when date_part(hour,model_run_started_at) >= 12 then dateadd(hour,sla.sla_hour,dateadd(day,1,date_trunc('day',model_run_started_at)))
-     else dateadd(hour,sla.sla_hour,date_trunc('day',model_run_started_at)) end as sla,
+case when date_part(minutes,model_run_started_at) >= 12 then dateadd(minutes,sla.sla_minutes,dateadd(day,1,date_trunc('day',model_run_started_at)))
+     else dateadd(minutes,sla.sla_minutes,date_trunc('day',model_run_started_at)) end as sla,
 case when model_executions.query_completed_at > sla then 'sla-missed' else 'sla-met' end sla_status
 
 from models

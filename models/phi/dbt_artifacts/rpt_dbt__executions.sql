@@ -95,8 +95,40 @@ with models as (
   UNION
   select 'MFI' as oc, '420' as sla_minutes  -- 7 am
 )
+, invocations as (
+  select 
+    command_invocation_id,
+    dbt_version,
+    project_name,
+    run_started_at,
+    dbt_command,
+    full_refresh_flag,
+    target_profile_name,
+    target_name,
+    target_schema,
+    target_threads,
+    dbt_cloud_project_id,
+    dbt_cloud_job_id,
+    dbt_cloud_run_id,
+    dbt_cloud_run_reason_category,
+    dbt_cloud_run_reason,
+    env_vars,
+    dbt_vars,
+    'https://cloud.getdbt.com/deploy/60665/projects/' || dbt_cloud_project_id || '/jobs/' || dbt_cloud_job_id as dbt_cloud_job_url,
+    'https://cloud.getdbt.com/deploy/60665/projects/' || dbt_cloud_project_id || '/runs/' || dbt_cloud_run_id as dbt_cloud_run_url
+  from {{ ref('fct_dbt__invocations') }}
+  where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
+)
 
 select 
+invocations.project_name as project_name,
+invocations.dbt_version as dbt_version,
+invocations.dbt_cloud_project_id as dbt_cloud_project_id,
+invocations.dbt_cloud_job_id as dbt_cloud_job_id,
+invocations.dbt_cloud_run_id as dbt_cloud_run_id,
+invocations.dbt_cloud_run_reason as dbt_cloud_run_reason,
+invocations.dbt_cloud_job_url as dbt_cloud_job_url,
+invocations.dbt_cloud_run_url as dbt_cloud_run_url,
 models.model_execution_id as model_execution_id,
 models.command_invocation_id as model_command_invocation_id,
 models.node_id as model_node_id,
@@ -192,3 +224,5 @@ on model_dependent_nodes.node_id = models.node_id
 and model_dependent_nodes.command_invocation_id = models.command_invocation_id
 left join sla
 on sla.oc = upper(substr(models.database,0,regexp_instr(models.database,'_') - 1))
+left join invocations
+on invocations.command_invocation_id = models.command_invocation_id

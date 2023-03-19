@@ -6,7 +6,7 @@
     FROM @{{ stage_db_name }}.{{ stage_schema_name }}.{{ stage }}  
     PATTERN='{{ pattern }}'
     FILE_FORMAT = (FORMAT_NAME='{{ target.database }}.{{ stage_schema_name }}.{{ fileformat }}' SKIP_HEADER = {{ skipheader }})
-    ON_ERROR = '{{ onerror }} ;
+    ON_ERROR = '{{ onerror }}' ;
     COMMIT;
     {{ log("Loaded data", True) }}
 

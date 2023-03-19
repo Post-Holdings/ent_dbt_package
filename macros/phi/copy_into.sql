@@ -1,6 +1,6 @@
 {% macro copy_into(table_name,stage_db_name,stage_schema_name,stage,pattern,fileformat,skipheader,onerror) %}
 
-    {{ log("Loading data", True) }}
+    {{ log("Loading data from blob stage", True) }}
     BEGIN;
     COPY INTO {{ table_name }}
     FROM @{{ stage_db_name }}.{{ stage_schema_name }}.{{ stage }}  
@@ -8,6 +8,6 @@
     FILE_FORMAT = (FORMAT_NAME='{{ target.database }}.{{ stage_schema_name }}.{{ fileformat }}' SKIP_HEADER = {{ skipheader }})
     ON_ERROR = '{{ onerror }}' ;
     COMMIT;
-    {{ log("Loaded data", True) }}
+    {{ log("Loaded data fom blob stage", True) }}
 
 {% endmacro %}

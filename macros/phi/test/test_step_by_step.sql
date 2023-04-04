@@ -33,7 +33,7 @@ with
             sum({{ table_b_col_2 }}) as table_b_col_2,
             sum({{ table_b_col_3 }}) as table_b_col_3
         from {{ table_b }}
-        where {{ date_field }} in (select {{ date_field }} from {{ table_a }})
+        where date_trunc('day', {{ date_field }}) in (select date_trunc('day', {{ date_field }}) from {{ table_a }})
     ),
     final as (
         select

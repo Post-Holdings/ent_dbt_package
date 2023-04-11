@@ -324,3 +324,4 @@ sources:
     
     tables:
       - name: dbt_tests_snapshots
+      - name: test_results_history

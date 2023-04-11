@@ -69,6 +69,7 @@ with models as (
   where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 
 )
+/*
 , tests_stats as (
   select test_name,
   to_date(snapshot_date) as snapshot_date,
@@ -79,6 +80,44 @@ with models as (
   dbt_valid_to
   from {{ ref('src_dbt_tests_snapshots') }}
   where snapshot_date >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
+)
+*/
+, tests_dq_stats as (
+  select 
+    invocation_id	,
+    node_id	,
+    test_name	,
+    test_name_long	,
+    test_type	,
+    model_refs	,
+    source_refs	,
+    test_severity_config	,
+    execution_time_seconds	,
+    test_result	,
+    file_test_defined	,
+    test_table_name	,
+    table_a_name	,
+    table_b_name	,
+    table_a_count	,
+    table_b_count	,
+    count_diff	,
+    col_1_name	,
+    table_a_col_1_value	,
+    table_b_col_1_value	,
+    col_1_diff	,
+    col_2_name	,
+    table_a_col_2_value	,
+    table_b_col_2_value	,
+    col_2_diff	,
+    col_3_name	,
+    table_a_col_3_value	,
+    table_b_col_3_value	,
+    col_3_diff	,
+    test_status	,
+    variance_pct_threshold	,
+    _timestamp	
+  from {{ ref('src_test_results_history') }}
+  where _timestamp >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 )
 , sla as (
   select 'ENT' as oc, '420' as sla_minutes  -- 7 am
@@ -184,16 +223,37 @@ test_executions.total_node_runtime as executed_test_total_node_runtime,
 test_executions.rows_affected as executed_test_rows_affected,
 test_executions.failures as executed_test_failures,
 
-to_date(tests_stats.snapshot_date) as snapshot_date,
-
 /*
+to_date(tests_stats.snapshot_date) as snapshot_date,
 tests_stats.failure_count as test_failure_count,
 tests_stats.dbt_scd_id,
 tests_stats.dbt_updated_at,
 tests_stats.dbt_valid_from,
 tests_stats.dbt_valid_to,
 */
-
+tests_dq_stats.model_refs 	as	test_model_refs 	,
+tests_dq_stats.test_result	as	test_result	,
+tests_dq_stats.file_test_defined	as	test_file_test_defined	,
+tests_dq_stats.test_table_name	as	test_table_name	,
+tests_dq_stats.table_a_name	as	test_table_a_name	,
+tests_dq_stats.table_b_name	as	test_table_b_name	,
+tests_dq_stats.table_a_count	as	test_table_a_count	,
+tests_dq_stats.table_b_count	as	test_table_b_count	,
+tests_dq_stats.count_diff	as	test_count_diff	,
+tests_dq_stats.col_1_name	as	test_col_1_name	,
+tests_dq_stats.table_a_col_1_value	as	test_table_a_col_1_value	,
+tests_dq_stats.table_b_col_1_value	as	test_table_b_col_1_value	,
+tests_dq_stats.col_1_diff	as	test_col_1_diff	,
+tests_dq_stats.col_2_name	as	test_col_2_name	,
+tests_dq_stats.table_a_col_2_value	as	test_table_a_col_2_value	,
+tests_dq_stats.table_b_col_2_value	as	test_table_b_col_2_value	,
+tests_dq_stats.col_2_diff	as	test_col_2_diff	,
+tests_dq_stats.col_3_name	as	test_col_3_name	,
+tests_dq_stats.table_a_col_3_value	as	test_table_a_col_3_value	,
+tests_dq_stats.table_b_col_3_value	as	test_table_b_col_3_value	,
+tests_dq_stats.col_3_diff	as	test_col_3_diff	,
+tests_dq_stats.test_status	as	test_status	,
+tests_dq_stats.variance_pct_threshold	as	test_variance_pct_threshold	,
 case when date_part(minutes,model_run_started_at) >= 12 then dateadd(minutes,sla.sla_minutes,dateadd(day,1,date_trunc('day',model_run_started_at)))
      else dateadd(minutes,sla.sla_minutes,date_trunc('day',model_run_started_at)) end as sla,
 case when model_executions.query_completed_at > sla then 'sla-missed' else 'sla-met' end sla_status
@@ -209,10 +269,16 @@ and tests.depends_on_node_id = models.node_id
 left join test_executions
 on test_executions.node_id = tests.node_id
 and test_executions.command_invocation_id = tests.command_invocation_id
+/*
 left join tests_stats
 on upper(tests_stats.test_name) = upper(tests.name)
 --and tests_stats.snapshot_date = to_date(test_executions.query_completed_at)
 and dbt_valid_from between to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.compile_started_at))) and to_timestamp_tz(convert_timezone('UTC','America/Chicago',to_timestamp_ntz(test_executions.query_completed_at)))
+*/
+left join tests_dq_stats
+on tests_dq_stats.node_id = tests.node_id
+and tests_dq_stats.invocation_id = tests.command_invocation_id
+and upper(tests_dq_stats.test_name) = upper(tests.name)
 left join model_tags
 on model_tags.node_id = models.node_id
 and model_tags.command_invocation_id = models.command_invocation_id

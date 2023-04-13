@@ -70,6 +70,9 @@ models:
         +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
         +materialized: "{{env_var('DBT_MAT_TABLE')}}"
         +transient: false
+        src:
+          +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+          +materialized: "{{env_var('DBT_MAT_VIEW')}}"
   dbt_artifacts:
     +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
     +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema

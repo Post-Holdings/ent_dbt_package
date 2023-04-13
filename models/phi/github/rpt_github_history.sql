@@ -148,4 +148,4 @@ left join user_email review_user on review_user.user_id = pull_request_review.us
 --left join issue_assignee on issue_assignee.issue_id = issue.id
 --left join user_email assigned_user on issue_assignee.user_id = assigned_user.user_id
 
-where lower(REPOSITORY.NAME) = '{{env_var('DBT_SRC_SCHEMA')}}'
+where lower(repository.name) = '{{env_var('DBT_REPO')}}'

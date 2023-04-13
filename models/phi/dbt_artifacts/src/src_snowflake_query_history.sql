@@ -3,7 +3,7 @@
     materialized='incremental',
     unique_key='query_id',
     on_schema_change='append_new_columns',
-    enabled=true
+    enabled=false
   )
 }}
 

@@ -50,7 +50,7 @@ from {{ ref('src_issue_comment') }}
 )
 , user as (
 select * 
-from {{ ref('src_user
+from {{ ref('src_user') }} 
 )
 , user_email as (
 select * from (

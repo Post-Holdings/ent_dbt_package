@@ -2,6 +2,7 @@ version: 2
 
 sources:
   - name: dbt_github
+    database: "{{env_var('DBT_SRC_DB')}}"
     schema: "{{ env_var('DBT_GITHUB_SCHEMA', target.schema) }}"
     tables:
       - name: repository

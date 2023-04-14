@@ -1,3 +1,10 @@
+{{
+  config(
+    materialized=env_var('DBT_MAT_VIEW'),
+    enabled=false
+  )
+}}
+    
 with source as (
 
     select * from {{ source('dbt_tests', 'dbt_tests_snapshots') }}

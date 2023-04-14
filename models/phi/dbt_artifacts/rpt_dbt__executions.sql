@@ -78,7 +78,7 @@ with models as (
   dbt_updated_at,
   dbt_valid_from,
   dbt_valid_to
-  from {{ ref('src_dbt_tests_snapshots') }}
+  from src_dbt_tests_snapshots  --- ref function was removed since the source is disabled
   where snapshot_date >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 )
 */

@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: dbt_github
+    database: "{{env_var('DBT_SRC_DB')}}"
+    schema: "{{ env_var('DBT_GITHUB_SCHEMA', target.schema) }}"
+    tables:
+      - name: repository
+      - name: commit
+      - name: pull_request
+      - name: commit_pull_request
+      - name: pull_request_review
+      - name: issue
+      - name: issue_merged
+      - name: issue_closed_history
+      - name: issue_assignee
+      - name: issue_comment
+      - name: user
+      - name: user_email

@@ -66,6 +66,9 @@ models:
         +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
         +materialized: "{{env_var('DBT_MAT_TABLE')}}"
         +transient: false
+        src:
+          +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+          +materialized: "{{env_var('DBT_MAT_VIEW')}}"
       github:
         +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
         +materialized: "{{env_var('DBT_MAT_TABLE')}}"

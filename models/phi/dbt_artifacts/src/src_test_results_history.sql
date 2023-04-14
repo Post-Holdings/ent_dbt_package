@@ -1,4 +1,10 @@
-
+{{
+  config(
+    materialized=env_var('DBT_MAT_VIEW'),
+    on_schema_change='append_new_columns',
+    enabled=true
+  )
+}}
 
 with source as (
 

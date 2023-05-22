@@ -15,6 +15,7 @@
        from {{ database_name }}."INFORMATION_SCHEMA"."COLUMNS" 
 WHERE lower(table_name) = lower('{{ table_name }}')
 AND lower(table_schema) = lower('{{ schema_name }}')
+order by ORDINAL_POSITION
     {% endset %} 
 
     {% set query_results = run_query(query) %}

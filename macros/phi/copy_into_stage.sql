@@ -1,4 +1,4 @@
-{% macro copy_into_stage(table_name,stage_db_name,stage_schema_name,stage,filename,fileformat,header,overwrite,sas,filesize=4900000000,single=true) %}
+{% macro copy_into_stage(table_name,stage_db_name,stage_schema_name,stage,filename,fileformat,header,overwrite,filesize=4900000000,single=true) %}
 
     {{ log("Loading data into external blob stage", True) }}
 

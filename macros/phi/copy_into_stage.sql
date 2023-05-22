@@ -1,4 +1,4 @@
-{% macro copy_into_stage(table_name,stage_db_name,stage_schema_name,stage,filename,fileformat,header,overwrite,sas,filesize=4900000000) %}
+{% macro copy_into_stage(table_name,stage_db_name,stage_schema_name,stage,filename,fileformat,header,overwrite,sas,filesize=4900000000,single=true) %}
 
     {{ log("Loading data into external blob stage", True) }}
 
@@ -10,7 +10,8 @@
     FILE_FORMAT = (FORMAT_NAME='{{ target.database }}.{{ stage_schema_name }}.{{ fileformat }}')
     HEADER = {{ header }}
     OVERWRITE = {{ overwrite }}
-    MAX_FILE_SIZE= {{ filesize }} ;
+    MAX_FILE_SIZE= {{ filesize }} 
+    SINGLE = {{ single }};
     COMMIT;
 
     {%- endcall -%}

@@ -1,6 +1,6 @@
 {{
     config(
-        materialized=env_var("DBT_MAT_TABLE"),
+        materialized=env_var("DBT_MAT_INCREMENTAL"),
         transient=false,
         tags=["artifacts", "dbt", "test"],
         schema=env_var("DBT_TEST_SCHEMA"),

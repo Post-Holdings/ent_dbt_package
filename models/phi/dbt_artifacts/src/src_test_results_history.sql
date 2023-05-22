@@ -8,7 +8,7 @@
 
 with source as (
 
-    select * from {{ source('dbt_tests', 'test_results_history') }}
+    select * from {{ ref('test_results_history') }}
 
 ),
 

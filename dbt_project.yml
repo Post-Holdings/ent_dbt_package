@@ -32,16 +32,12 @@ models:
   ent_dbt_package:
     # Applies to all files under models/dbt_artifacts/
   dbt_artifacts:
-    +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
     +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
     staging:
-      +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
       +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
     sources:
-      +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
       +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
     src:
-      +database: "{{env_var('DBT_TGT_DB')}}" # optional, default is your target database
       +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
 
         

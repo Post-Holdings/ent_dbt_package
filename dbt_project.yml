@@ -31,6 +31,20 @@ log-path: "logs"
 models:
   ent_dbt_package:
     # Applies to all files under models/dbt_artifacts/
+      dbt_artifacts:
+        +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+        +materialized: table
+        +transient: false
+        src:
+          +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+          +materialized: view
+      github:
+        +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+        +materialized: table
+        +transient: false
+        src:
+          +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+          +materialized: view
   dbt_artifacts:
     +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}" # optional, default is your target schema
     staging:

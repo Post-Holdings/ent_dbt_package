@@ -1,4 +1,9 @@
-
+{{
+  config(
+    materialized='view',
+    enabled=false
+  )
+}}
 
 with source as (
 

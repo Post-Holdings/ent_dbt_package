@@ -1,6 +1,6 @@
 {{
   config(
-    materialized=env_var('DBT_MAT_VIEW'),
+    materialized='view',
     on_schema_change='sync_all_columns',
     enabled=true
   )
@@ -256,7 +256,9 @@ tests_dq_stats.test_status	as	test_status	,
 tests_dq_stats.variance_pct_threshold	as	test_variance_pct_threshold	,
 case when date_part(minutes,model_run_started_at) >= 12 then dateadd(minutes,sla.sla_minutes,dateadd(day,1,date_trunc('day',model_run_started_at)))
      else dateadd(minutes,sla.sla_minutes,date_trunc('day',model_run_started_at)) end as sla,
-case when model_executions.query_completed_at > sla then 'sla-missed' else 'sla-met' end sla_status
+case when model_executions.query_completed_at > sla then 'sla-missed'
+     when sla is null then 'sla-notprovided'
+     else 'sla-met' end sla_status
 
 from models
 left join model_executions

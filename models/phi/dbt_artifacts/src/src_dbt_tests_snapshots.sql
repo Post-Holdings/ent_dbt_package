@@ -1,6 +1,6 @@
 {{
   config(
-    materialized=env_var('DBT_MAT_VIEW'),
+    materialized='view',
     enabled=false
   )
 }}

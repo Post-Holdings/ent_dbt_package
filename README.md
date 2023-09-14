@@ -1,8 +1,12 @@
-This [dbt](https://github.com/dbt-labs/dbt) package contains macros that can be (re)used across dbt projects.
+This [dbt](https://github.com/dbt-labs/dbt) package contains macros that can be (re)used across dbt projects. The package also includes model required to collect dbt artifacts.
 
 ## Installation Instructions
 
 Check [dbt Hub](https://hub.getdbt.com/dbt-labs/) for the latest installation instructions, or [read the docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
+
+Additionally, this package requires some new dbt cloud environment variable setup for writing data into Snowflake schema. Environment variable with following names need to be defined in your dbt Cloud project prior to this package use. These two variables will hold the schema name for writing dbt Artifacts & Test objects into your target database.
+1. DBT_ARTIFACTS_SCHEMA
+2. DBT_TEST_SCHEMA
 
 ----
 

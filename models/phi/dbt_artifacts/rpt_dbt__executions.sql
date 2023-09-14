@@ -159,7 +159,7 @@ with models as (
   where run_started_at >= dateadd(mm, -3, date_trunc('month', current_date()))  --- 1st day of 3 months before today
 )
 
-select 
+select distinct
 invocations.project_name as project_name,
 invocations.dbt_version as dbt_version,
 invocations.dbt_cloud_project_id as dbt_cloud_project_id,

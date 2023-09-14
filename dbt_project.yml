@@ -30,22 +30,23 @@ log-path: "logs"
 # using the `{{ config(...) }}` macro.
 models:
   ent_dbt_package:
-    # Applies to all files under models/dbt_artifacts/
-      dbt_artifacts:
-        +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
-        +materialized: table
-        +transient: false
-        src:
+      phi:
+      # Applies to all files under models/dbt_artifacts/
+        dbt_artifacts:
           +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
-          +materialized: view
-    # Applies to all files under models/github/
-      github:
-        +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
-        +materialized: table
-        +transient: false
-        src:
+          +materialized: table
+          +transient: false
+          src:
+            +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+            +materialized: view
+      # Applies to all files under models/github/
+        github:
           +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
-          +materialized: view
+          +materialized: table
+          +transient: false
+          src:
+            +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
+            +materialized: view
   dbt_artifacts:
     +schema: "{{env_var('DBT_ARTIFACTS_SCHEMA')}}"
     staging:

@@ -13,7 +13,7 @@
 
     {% if target.name != 'default' %}
     
-        {% for result in results if result.node.resource_type == 'test' and ('test_step_by_step' in result.node.raw_sql or 'test_time_travel' in result.node.raw_sql or 'test_step_by_step_wmt' in result.node.raw_sql) %}
+        {% for result in results if result.node.resource_type == 'test' and  ('test_step_by_step' in result.node.relation_name or 'test_time_travel' in result.node.relation_name) %}
 
             create table if not exists {{ history_tbl }} (
                 INVOCATION_ID VARCHAR(16777216),

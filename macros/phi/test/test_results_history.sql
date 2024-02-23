@@ -9,11 +9,11 @@
     {%- set central_tbl -%} {{ target.schema }}.test_results_central {%- endset -%}
     {%- set history_tbl -%} {{env_var('DBT_TEST_SCHEMA')}}.test_results_history {%- endset -%}
     
-    {{ log("Centralizing test data in " + central_tbl, info = true) if execute }}
+    {{ log("Centralizing test data in " + history_tbl, info = true) if execute }}
 
     {% if target.name != 'default' %}
     
-        {% for result in results if result.node.resource_type == 'test' and ('test_step_by_step' in result.node.raw_sql or 'test_time_travel' in result.node.raw_sql) %}
+        {% for result in results if result.node.resource_type == 'test' and  ('test_step_by_step' in result.node.relation_name or 'test_time_travel' in result.node.relation_name) %}
 
             create table if not exists {{ history_tbl }} (
                 INVOCATION_ID VARCHAR(16777216),

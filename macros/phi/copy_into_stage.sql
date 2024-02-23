@@ -1,6 +1,6 @@
 {% macro copy_into_stage(table_name,stage_db_name,stage_schema_name,stage,filename,fileformat,header,overwrite,filesize=4900000000,single=true) %}
 
-    {{ log("Loading data into external blob stage", True) }}
+    {{ log("Loading data into external blob stage", False) }}
 
     {%- call statement('query', fetch_result=True,auto_begin=false) -%}
 
@@ -18,6 +18,6 @@
 
     {{ log(load_result('query')) }}
 
-    {{ log("Loaded data into external blob stage", True) }}
+    {{ log("Loaded data into external blob stage", False) }}
 
 {% endmacro %}

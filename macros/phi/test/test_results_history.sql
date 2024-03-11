@@ -80,7 +80,7 @@
                 table_b_name::text as table_b_name,
                 table_a_count::text as table_a_count,
                 table_b_count::text as table_b_count,
-                table_b_count::text as count_diff,
+                count_diff::text as count_diff,
                 col_1_name::text as col_1_name,
                 table_a_col_1_value::text as table_a_col_1_value,
                 table_b_col_1_value::text as table_b_col_1_value,

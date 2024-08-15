@@ -58,7 +58,7 @@ models:
 
         
 # configuration for tests directory
-tests:
+data_tests:
   +severity: warn  # all tests
   +store_failures: "{{ (env_var('DBT_STORE_TEST_RESULTS') == 'YES') | as_bool }}"
   +schema: "{{env_var('DBT_TEST_SCHEMA')}}"

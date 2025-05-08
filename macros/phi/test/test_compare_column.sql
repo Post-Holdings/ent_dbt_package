@@ -1,4 +1,4 @@
-{%- set columns_to_compare=adapter.get_columns_in_relation(ref('zz_dim_sample'))  -%}
+{%- set columns_to_compare=adapter.get_columns_in_relation(ref(table_a))  -%}
 
 {{ columns_to_compare }}
 
